@@ -1,14 +1,20 @@
 # Use Java 17
 FROM eclipse-temurin:17-jdk-alpine
 
-# App folder
+# Working directory
 WORKDIR /app
 
-# Copy project files
+# Copy all project files
 COPY . .
 
-# Build jar
+# Give permission to Maven wrapper
+RUN chmod +x mvnw
+
+# Build Spring Boot jar
 RUN ./mvnw clean package -DskipTests
 
+# Expose port
+EXPOSE 8080
+
 # Run application
-CMD ["java","-jar","target/platinum_HostelManagement-0.0.1-SNAPSHOT.jar"]
+CMD ["sh","-c","java -jar target/*.jar"]
