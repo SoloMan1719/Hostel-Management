@@ -125,7 +125,7 @@
 </div>
 
 <script>
-const BASE = "http://localhost:8082";
+const BASE = window.location.origin;
 const safeArray = (res) => (res && res.data && Array.isArray(res.data)) ? res.data : [];
 
 function toggleTheme() { document.body.classList.toggle("dark"); }
