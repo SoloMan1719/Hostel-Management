@@ -4,8 +4,8 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.entity.Bed;
-import com.example.repository.BedRepository;
+import com.example.demo.entity.Bed;
+import com.example.demo.repository.BedRepository;
 
 @RestController                 // ✅ REST API controller
 @RequestMapping("/explorer")   // ✅ Base URL
