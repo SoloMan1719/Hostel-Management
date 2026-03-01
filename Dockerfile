@@ -1,20 +1,18 @@
-# Use Java 17
 FROM eclipse-temurin:17-jdk-alpine
 
-# Working directory
 WORKDIR /app
 
-# Copy all project files
 COPY . .
 
-# Give permission to Maven wrapper
+# Maven wrapper permission
 RUN chmod +x mvnw
 
-# Build Spring Boot jar
+# Build jar
 RUN ./mvnw clean package -DskipTests
 
-# Expose port
+# Render dynamic port support
+ENV PORT=8080
 EXPOSE 8080
 
-# Run application
-CMD ["sh","-c","java -jar target/*.jar"]
+# Start Spring Boot
+CMD java -jar target/*.jar
