@@ -280,5 +280,46 @@ show('dashboard');
 📧 premiumhostelmanagement@gmail.com
 </marquee>
 </div>
+<script>
+function loadFullView(buildingId){
+
+    if(!buildingId){
+        document.getElementById("explorerTable").innerHTML="";
+        return;
+    }
+
+    axios.get(`${BASE}/explorer/${buildingId}`)
+    .then(res => {
+
+        let html = `
+            <tr>
+                <th>Floor</th>
+                <th>Block</th>
+                <th>Room</th>
+                <th>Bed</th>
+                <th>Status</th>
+            </tr>
+        `;
+
+        (res.data || []).forEach(e=>{
+            html += `
+                <tr>
+                    <td>${e.floorName}</td>
+                    <td>${e.blockName}</td>
+                    <td>${e.roomNo}</td>
+                    <td>${e.bedNumber}</td>
+                    <td class="${e.occupied?'occupied':'available'}">
+                        ${e.occupied?'Occupied':'Available'}
+                    </td>
+                </tr>
+            `;
+        });
+
+        document.getElementById("explorerTable").innerHTML = html;
+
+    })
+    .catch(()=>alert("Explorer data load failed"));
+}
+</script>
 </body>
 </html>
