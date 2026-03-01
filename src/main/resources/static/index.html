@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Premium Hostels Admin Login</title>
+
+<style>
+:root{
+--bg:#1e3a8a;
+--card:#ffffff;
+--text:#111827;
+}
+
+body.dark{
+--bg:#0f172a;
+--card:#1e293b;
+--text:#f1f5f9;
+}
+
+body{
+margin:0;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,var(--bg),#020617);
+font-family:Segoe UI;
+transition:.3s;
+}
+
+/* LOGIN CARD */
+.login-box{
+background:var(--card);
+padding:40px;
+border-radius:15px;
+width:350px;
+text-align:center;
+box-shadow:0 10px 30px rgba(0,0,0,.3);
+color:var(--text);
+}
+
+.login-box h2{
+margin-bottom:25px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:10px 0;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+margin-top:10px;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+/* THEME SWITCH */
+.theme{
+position:fixed;
+top:20px;
+right:20px;
+background:white;
+padding:8px 15px;
+border-radius:20px;
+cursor:pointer;
+font-weight:bold;
+}
+
+body.dark .theme{
+background:#334155;
+color:white;
+}
+
+.footer{
+margin-top:20px;
+font-size:13px;
+opacity:.8;
+}
+</style>
+</head>
+
+<body>
+
+<div class="theme" onclick="toggleTheme()">🌙 / ☀</div>
+
+<div class="login-box">
+
+<h2>🏨 Premium Hostels Admin</h2>
+
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="login()">Login</button>
+
+<div class="footer">
+© 2026 Premium Hostels Management
+</div>
+
+</div>
+
+<script>
+
+/* ---------- THEME ---------- */
+
+if(localStorage.getItem("theme")==="dark"){
+document.body.classList.add("dark");
+}
+
+function toggleTheme(){
+document.body.classList.toggle("dark");
+
+localStorage.setItem(
+"theme",
+document.body.classList.contains("dark")
+? "dark":"light"
+);
+}
+
+/* ---------- LOGIN ---------- */
+
+function login(){
+
+let email=document.getElementById("email").value;
+let pass=document.getElementById("password").value;
+
+/* DEMO ADMIN LOGIN */
+if(email==="admin@gmail.com" && pass==="admin123"){
+
+localStorage.setItem("loggedIn","true");
+
+/* redirect dashboard */
+window.location.href="login.html";
+
+}else{
+alert("Invalid Login");
+}
+}
+
+</script>
+
+</body>
+</html>

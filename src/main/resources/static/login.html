@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Platinum Hostel Admin - Full Access</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+		/* Logout Button Style */
+		.logout-btn {
+		    position: fixed;
+		    top: 20px;
+		    right: 30px;
+		    z-index: 2000;
+		    background: #dc2626;
+		    color: white;
+		    border: none;
+		    padding: 10px 20px;
+		    border-radius: 8px;
+		    font-weight: bold;
+		    cursor: pointer;
+		    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+		    display: flex;
+		    align-items: center;
+		    gap: 8px;
+		    transition: 0.3s;
+		}
+		.logout-btn:hover { background: #b91c1c; transform: translateY(-2px); }
+        :root { --bg-color: #f4f6f9; --sidebar-gradient: linear-gradient(180deg, #1e3a8a, #111827); --card-bg: white; --table-header: #1e293b; --text-color: #1e293b; }
+        body.dark { --bg-color: #0f172a; --sidebar-gradient: linear-gradient(180deg, #0f172a, #020617); --card-bg: #1e293b; --text-color: #f1f5f9; --table-header: #0f172a; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { display: flex; background: var(--bg-color); transition: 0.3s; color: var(--text-color); min-height: 100vh; }
+        .sidebar { width: 240px; height: 100vh; background: var(--sidebar-gradient); color: white; padding: 20px; position: fixed; z-index: 1000; }
+        .sidebar h2 { text-align: center; margin-bottom: 30px; font-size: 18px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        .sidebar button { width: 100%; padding: 12px; margin-bottom: 10px; background: rgba(255, 255, 255, 0.1); border: none; color: white; cursor: pointer; border-radius: 6px; transition: 0.3s; text-align: left; }
+        .sidebar button:hover { background: #2563eb; transform: translateX(5px); }
+        .main { margin-left: 240px; padding: 30px; padding-bottom: 150px; width: calc(100% - 240px); }
+        .card { background: var(--card-bg); color: var(--text-color); padding: 25px; margin-bottom: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); display: none; }
+        .card h3 { margin-bottom: 20px; color: #2563eb; border-left: 4px solid #2563eb; padding-left: 10px; }
+        .input-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; align-items: center; }
+        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 6px; width: 180px; background: white; }
+        
+        button.action { background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        button.del { background: #dc2626; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: var(--card-bg); border-radius: 8px; overflow: hidden; }
+        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: center; }
+        th { background: var(--table-header); color: white; }
+        
+        .status-paid { color: #16a34a; font-weight: bold; }
+        .status-partial { color: #f59e0b; font-weight: bold; }
+        .status-unpaid { color: #dc2626; font-weight: bold; }
+        .floor-header { background: #e2e8f0 !important; color: #1e3a8a; font-weight: bold; text-align: left !important; padding-left: 20px !important; }
+        .occupied { color: #dc2626; font-weight: bold; }
+        .available { color: #16a34a; font-weight: bold; }
+        .dashboard-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; cursor: pointer; }
+        .dash-box { padding: 20px; border-radius: 12px; color: white; text-align: center; transition: 0.3s; }
+        .dash-box:hover { transform: scale(1.05); }
+        .blue { background: #2563eb; } .green { background: #16a34a; } .orange { background: #f59e0b; } .red { background: #dc2626; } .purple { background: #7c3aed; } .gray { background: #4b5563; }
+        .footer { position: fixed; bottom: 40px; left: 240px; width: calc(100% - 240px); background: #1e293b; color: white; text-align: center; padding: 10px 0; font-size: 14px; z-index: 998; }
+        .bottom-marquee { position: fixed; bottom: 0; left: 240px; width: calc(100% - 240px); height: 40px; background: #dc2626; color: white; display: flex; align-items: center; font-weight: bold; z-index: 999; border-top: 2px solid #fff; }
+    </style>
+</head>
+<body>
+	<body>
+	    <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+
+<div class="sidebar">
+    <h2>🏨 Premium Hostels Management</h2>
+    <button onclick="toggleTheme()">🌙 / ☀ Theme</button>
+    <button onclick="show('dashboard')">📊 Dashboard</button>
+    <button onclick="show('explorer')">🔍 Explore Rooms</button> 
+    <button onclick="show('building')">🏢 Building</button>
+    <button onclick="show('floor')">🪜 Floor</button>
+    <button onclick="show('block')">🧱 Block</button>
+    <button onclick="show('room')">🛏 Room</button>
+    <button onclick="show('bed')">💤 Bed</button>
+    <button onclick="show('student')">🎓 Student</button>
+</div>
+
+<div class="main">
+    <div id="dashboard" class="card">
+        <h3>Dashboard Overview</h3>
+        <div class="dashboard-cards">
+            <div class="dash-box blue"><h4>Total Students</h4><h2 id="dTotal">0</h2></div>
+            <div class="dash-box green"><h4>Paid</h4><h2 id="dPaid">0</h2></div>
+            <div class="dash-box orange"><h4>Partial</h4><h2 id="dPartial">0</h2></div>
+            <div class="dash-box red"><h4>Unpaid</h4><h2 id="dUnpaid">0</h2></div>
+            <div class="dash-box purple"><h4>Blocks</h4><h2 id="dBlocks">0</h2></div>
+            <div class="dash-box gray"><h4>Rooms</h4><h2 id="dRooms">0</h2></div>
+            <div class="dash-box blue"><h4>Total Beds</h4><h2 id="dBeds">0</h2></div>
+        </div>
+    </div>
+
+    <div id="building" class="card">
+        <h3>Building Setup</h3>
+        <div class="input-group">
+            <input id="bName" placeholder="Building Name">
+            <select id="bType"><option>BOYS</option><option>GIRLS</option><option>COLIVING</option></select>
+            <button class="action" onclick="createBuilding()">Create</button>
+        </div>
+        <table><thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Action</th></tr></thead><tbody id="buildingBody"></tbody></table>
+    </div>
+
+    <div id="student" class="card">
+        <h3>Student Admission</h3>
+        <div class="input-group">
+            <select id="studentBuildingDD" onchange="loadFloors(this.value, 'studentFloorDD')"><option value="">Select Building</option></select>
+            <select id="studentFloorDD" onchange="loadBlocks(this.value, 'studentBlockDD')" disabled><option value="">Select Floor</option></select>
+            <select id="studentBlockDD" onchange="loadRooms(this.value, 'studentRoomDD')" disabled><option value="">Select Block</option></select>
+            <select id="studentRoomDD" onchange="loadBeds(this.value, 'studentBedDD')" disabled><option value="">Select Room</option></select>
+            <select id="studentBedDD" disabled><option value="">Select Bed</option></select>
+            <input id="sName" placeholder="Name">
+            <select id="sGender"><option value="BOY">BOY</option><option value="GIRL">GIRL</option></select>
+            <input id="sTotal" type="number" style="width:100px" placeholder="Fee">
+            <input id="sPaid" type="number" style="width:100px" placeholder="Paid">
+            <button class="action" onclick="admitStudent()">Admit</button>
+        </div>
+        <table><thead><tr><th>Name</th><th>Gender</th><th>Total</th><th>Paid</th><th>Balance</th><th>Status</th><th>Action</th></tr></thead><tbody id="studentBody"></tbody></table>
+    </div>
+
+    <div id="floor" class="card"><h3>Floor Setup</h3><div class="input-group"><select id="floorBuildingDD"><option value="">Select Building</option></select><input id="fName" placeholder="Floor Name"><button class="action" onclick="createFloor()">Create</button></div><table><thead><tr><th>ID</th><th>Floor</th><th>Building</th><th>Action</th></tr></thead><tbody id="floorBody"></tbody></table></div>
+    <div id="block" class="card"><h3>Block Setup</h3><div class="input-group"><select id="blockBuildingDD" onchange="loadFloors(this.value, 'blockFloorDD')"><option value="">Select Building</option></select><select id="blockFloorDD" disabled><option value="">Select Floor</option></select><input id="blockName" placeholder="Block Name"><button class="action" onclick="createBlock()">Create</button></div><table><thead><tr><th>ID</th><th>Block</th><th>Floor</th><th>Action</th></tr></thead><tbody id="blockBody"></tbody></table></div>
+    <div id="room" class="card"><h3>Room Setup</h3><div class="input-group"><select id="roomBuildingDD" onchange="loadFloors(this.value, 'roomFloorDD')"><option value="">Select Building</option></select><select id="roomFloorDD" onchange="loadBlocks(this.value, 'roomBlockDD')" disabled><option value="">Select Floor</option></select><select id="roomBlockDD" disabled><option value="">Select Block</option></select><input id="roomNo" placeholder="Room No"><input id="roomTotalBeds" type="number" placeholder="Total Beds"><select id="roomType"><option value="AC">AC</option><option value="NON_AC">NON_AC</option></select><button class="action" onclick="createRoom()">Create</button></div><table><thead><tr><th>Room No</th><th>Beds</th><th>Available</th><th>Type</th><th>Action</th></tr></thead><tbody id="roomBody"></tbody></table></div>
+    <div id="bed" class="card"><h3>Bed Setup</h3><div class="input-group"><select id="bedBuildingDD" onchange="loadFloors(this.value, 'bedFloorDD')"><option value="">Select Building</option></select><select id="bedFloorDD" onchange="loadBlocks(this.value, 'bedBlockDD')" disabled><option value="">Select Floor</option></select><select id="bedBlockDD" onchange="loadRooms(this.value, 'bedRoomDD')" disabled><option value="">Select Block</option></select><select id="bedRoomDD" disabled><option value="">Select Room</option></select><input id="bedNumber" placeholder="Bed Number"><button class="action" onclick="createBed()">Create</button></div><table><thead><tr><th>Bed No</th><th>Status</th><th>Room</th><th>Action</th></tr></thead><tbody id="bedBody"></tbody></table></div>
+    <div id="explorer" class="card"><h3>Hostel Layout Explorer</h3><div class="input-group"><select id="expBuildingDD" onchange="loadFullView(this.value)"><option value="">Select Building</option></select></div><table id="explorerTable"></table></div>
+</div>
+
+<script>
+const BASE = "http://localhost:8082";
+const safeArray = (res) => (res && res.data && Array.isArray(res.data)) ? res.data : [];
+
+function toggleTheme() { document.body.classList.toggle("dark"); }
+
+function show(id) {
+    document.querySelectorAll('.card').forEach(c => c.style.display = "none");
+    const section = document.getElementById(id);
+    if (section) {
+        section.style.display = "block";
+        if (id === 'dashboard') loadDashboard();
+        if (id === 'building') loadBuildings();
+        if (id === 'floor') { loadBuildingsDD('floorBuildingDD'); loadFloorsTable(); }
+        if (id === 'block') { loadBuildingsDD('blockBuildingDD'); loadBlocksTable(); }
+        if (id === 'room') { loadBuildingsDD('roomBuildingDD'); loadRoomsTable(); }
+        if (id === 'bed') { loadBuildingsDD('bedBuildingDD'); loadBedsTable(); }
+        if (id === 'student') { loadBuildingsDD('studentBuildingDD'); loadStudents(); }
+        if (id === 'explorer') loadBuildingsDD('expBuildingDD');
+    }
+}
+
+// BUILDING
+function loadBuildings() { 
+    axios.get(`${BASE}/building/all`).then(res => { 
+        let h = ""; 
+        safeArray(res).forEach(b => h += `<tr><td>${b.id}</td><td>${b.name}</td><td>${b.hostelType}</td><td><button class="del" onclick="deleteItem('building', ${b.id}, loadBuildings)">Delete</button></td></tr>`); 
+        document.getElementById("buildingBody").innerHTML = h || "<tr><td colspan='4'>No data</td></tr>"; 
+    }); 
+}
+function createBuilding() { 
+    axios.post(`${BASE}/building/save`, { name: document.getElementById("bName").value, hostelType: document.getElementById("bType").value })
+    .then(() => { alert("Saved Successfully!"); loadBuildings(); }); 
+}
+
+// STUDENT TABLE WITH EDIT BUTTON
+function loadStudents() {
+    axios.get(`${BASE}/students`).then(res => {
+        let h = "";
+        safeArray(res).forEach(s => {
+            const bal = (s.totalFee || 0) - (s.paidAmount || 0);
+            h += `<tr>
+                <td>${s.name}</td>
+                <td>${s.gender}</td>
+                <td>${s.totalFee}</td>
+                <td>${s.paidAmount}</td>
+                <td style="color:red; font-weight:bold;">${bal}</td>
+                <td class="status-${(s.paymentStatus||'').toLowerCase()}">${s.paymentStatus}</td>
+                <td>
+                    <button class="action" style="padding: 5px 10px; font-size: 12px; background: #f59e0b;" onclick="editFee(${s.id})">Edit Fee</button>
+                    <button class="del" onclick="deleteItem('students', ${s.id}, loadStudents)">Remove</button>
+                </td>
+            </tr>`;
+        });
+        document.getElementById("studentBody").innerHTML = h || "<tr><td colspan='7'>No data</td></tr>";
+    });
+}
+function admitStudent() {
+    const bedId = document.getElementById("studentBedDD").value;
+    if(!bedId) return alert("Select a Bed!");
+    const p = { name: document.getElementById("sName").value, gender: document.getElementById("sGender").value, totalFee: document.getElementById("sTotal").value, paidAmount: document.getElementById("sPaid").value };
+    axios.post(`${BASE}/students/admit/${bedId}`, p)
+    .then(() => { alert("Saved Successfully!"); loadStudents(); })
+    .catch(e => alert(e.response?.data || "Error Occupying Bed!"));
+}
+
+// DROP DOWNS
+function loadBuildingsDD(id) { axios.get(`${BASE}/building/all`).then(res => { let opt = '<option value="">Select Building</option>'; safeArray(res).forEach(b => opt += `<option value="${b.id}">${b.name}</option>`); document.getElementById(id).innerHTML = opt; }); }
+function loadFloors(bid, target) { if(!bid) return; axios.get(`${BASE}/floor/by-building/${bid}`).then(res => { let opt = '<option value="">Select Floor</option>'; safeArray(res).forEach(f => opt += `<option value="${f.id}">${f.name}</option>`); const el = document.getElementById(target); el.innerHTML = opt; el.disabled = false; }); }
+function loadBlocks(fid, target) { if(!fid) return; axios.get(`${BASE}/block/by-floor/${fid}`).then(res => { let opt = '<option value="">Select Block</option>'; safeArray(res).forEach(b => opt += `<option value="${b.id}">${b.name}</option>`); const el = document.getElementById(target); el.innerHTML = opt; el.disabled = false; }); }
+
+// ROOM LOADING WITH DISABLE LOGIC
+function loadRooms(blid, target) { 
+    if(!blid) return; 
+    axios.get(`${BASE}/room/by-block/${blid}`).then(res => { 
+        let opt = '<option value="">Select Room</option>'; 
+        safeArray(res).forEach(r => {
+            // Check if room is full
+            const isFull = r.availableBeds <= 0;
+            const style = isFull ? 'style="color:red;"' : '';
+            const statusText = isFull ? ' (FULL)' : '';
+            opt += `<option value="${r.id}" ${isFull ? 'disabled' : ''} ${style}>${r.roomNo}${statusText}</option>`;
+        }); 
+        const el = document.getElementById(target); 
+        el.innerHTML = opt; 
+        el.disabled = false; 
+    }); 
+}
+
+function loadBeds(rid, target) { if(!rid) return; axios.get(`${BASE}/bed/by-room/${rid}`).then(res => { let opt = '<option value="">Select Bed</option>'; safeArray(res).filter(b => !b.occupied).forEach(b => opt += `<option value="${b.id}">${b.bedNumber}</option>`); const el = document.getElementById(target); el.innerHTML = opt; el.disabled = false; }); }
+
+// SETUP TABLES
+function loadFloorsTable() { axios.get(`${BASE}/floor/all`).then(res => { let h = ""; safeArray(res).forEach(f => h += `<tr><td>${f.id}</td><td>${f.name}</td><td>${f.building?.name}</td><td><button class="del" onclick="deleteItem('floor', ${f.id}, loadFloorsTable)">Delete</button></td></tr>`); document.getElementById("floorBody").innerHTML = h; }); }
+function loadBlocksTable() { axios.get(`${BASE}/block/all`).then(res => { let h = ""; safeArray(res).forEach(b => h += `<tr><td>${b.id}</td><td>${b.name}</td><td>${b.floor?.name}</td><td><button class="del" onclick="deleteItem('block', ${b.id}, loadBlocksTable)">Delete</button></td></tr>`); document.getElementById("blockBody").innerHTML = h; }); }
+function loadRoomsTable() { axios.get(`${BASE}/room/all`).then(res => { let h = ""; safeArray(res).forEach(r => h += `<tr><td>${r.roomNo}</td><td>${r.totalBeds}</td><td>${r.availableBeds}</td><td>${r.roomType}</td><td><button class="del" onclick="deleteItem('room', ${r.id}, loadRoomsTable)">Delete</button></td></tr>`); document.getElementById("roomBody").innerHTML = h; }); }
+function loadBedsTable() { axios.get(`${BASE}/bed/all`).then(res => { let h = ""; safeArray(res).forEach(b => h += `<tr><td>${b.bedNumber}</td><td>${b.occupied?'Occupied':'Free'}</td><td>${b.room?.roomNo}</td><td><button class="del" onclick="deleteItem('bed', ${b.id}, loadBedsTable)">Delete</button></td></tr>`); document.getElementById("bedBody").innerHTML = h; }); }
+
+function createFloor() { axios.post(`${BASE}/floor/${document.getElementById("floorBuildingDD").value}`, { name: document.getElementById("fName").value }).then(() => { alert("Saved Successfully!"); loadFloorsTable(); }); }
+function createBlock() { axios.post(`${BASE}/block/${document.getElementById("blockFloorDD").value}`, { name: document.getElementById("blockName").value }).then(() => { alert("Saved Successfully!"); loadBlocksTable(); }); }
+function createRoom() { axios.post(`${BASE}/room/${document.getElementById("roomBlockDD").value}`, { roomNo: document.getElementById("roomNo").value, totalBeds: document.getElementById("roomTotalBeds").value, roomType: document.getElementById("roomType").value }).then(() => { alert("Saved Successfully!"); loadRoomsTable(); }); }
+function createBed() { axios.post(`${BASE}/bed/${document.getElementById("bedRoomDD").value}`, { bedNumber: document.getElementById("bedNumber").value }).then(() => { alert("Saved Successfully!"); loadBedsTable(); }); }
+function deleteItem(e, id, r) { if(confirm("Delete?")) axios.delete(`${BASE}/${e}/${id}`).then(() => { alert("Deleted!"); r(); }); }
+
+function loadDashboard() {
+    axios.get(`${BASE}/students`).then(res => { const d = safeArray(res); document.getElementById("dTotal").innerText = d.length; document.getElementById("dPaid").innerText = d.filter(s => s.paymentStatus === 'PAID').length; document.getElementById("dUnpaid").innerText = d.filter(s => s.paymentStatus === 'UNPAID').length; document.getElementById("dPartial").innerText = d.filter(s => s.paymentStatus === 'PARTIAL').length; });
+    axios.get(`${BASE}/block/all`).then(res => document.getElementById("dBlocks").innerText = safeArray(res).length);
+    axios.get(`${BASE}/room/all`).then(res => document.getElementById("dRooms").innerText = safeArray(res).length);
+    axios.get(`${BASE}/bed/all`).then(res => document.getElementById("dBeds").innerText = safeArray(res).length);
+}
+function logout() {
+    if(confirm("Are you sure you want to logout?")) {
+        // 1. Session clear cheyali
+        localStorage.removeItem("loggedIn"); 
+        
+        // 2. Alert chupinchali
+        alert("Logged out successfully!");
+        
+        // 3. Login page ki redirect cheyali
+        // Meeru pampina login code file name "login.html" ani unte adhe ivvandi
+        window.location.href = "index.html"; 
+    }
+	// Dashboard open avvaka munde check chestundi
+	if (localStorage.getItem("loggedIn") !== "true") {
+	    window.location.href = "index.html"; 
+	}
+}
+function editFee(studentId) {
+    const newTotal = prompt("Enter New Total Fee:");
+    const newPaid = prompt("Enter New Paid Amount:");
+
+    if (newTotal != null && newPaid != null) {
+        // Ikkada mee API endpoint ki PUT/POST request పంపాలి
+        axios.put(`${BASE}/students/update-fee/${studentId}?total=${newTotal}&paid=${newPaid}`)
+        .then(() => {
+            alert("Fee Updated Successfully!");
+            loadStudents(); // Table ni refresh chestundi
+        })
+        .catch(err => alert("Error updating fee"));
+    }
+}
+
+show('dashboard');
+</script>
+
+<footer class="footer">© 2026 Premium Hostels Management | 📧 premiumhostelmanagement@gmail.com | 📞 9515013048</footer>
+<div class="bottom-marquee">
+<marquee behavior="scroll" direction="left" scrollamount="6">
+🏨 Welcome to Premium Hostels Management System 🏨 |
+🏢 Smart Building & Room Allocation |
+🛏 Easy Student Admission |
+📊 Real-Time Bed Availability |
+💼 Secure & Transparent Fee Tracking |
+📞 For Admissions & Enquiries Contact Us: 9515013048 |
+📧 premiumhostelmanagement@gmail.com
+</marquee>
+</div>
+</body>
+</html>
